@@ -69,6 +69,11 @@ async fn web_visit(
     }
 }
 
+async fn empty_web_visit(state: State<SqlitePool>) -> Result<String, StatusCode> {
+    let path = Path("default buttmunch".into());
+    web_visit(path, state).await
+}
+
 // OK, baby's first tokio app...
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -76,6 +81,7 @@ async fn main() -> anyhow::Result<()> {
 
     let app = Router::new()
         .route("/:visitor", get(web_visit))
+        .route("/", get(empty_web_visit))
         .with_state(pool.clone());
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
