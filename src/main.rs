@@ -26,7 +26,7 @@ const VISIT: &str = r#"
     SET count = count + ?1;
     "#;
 const FETCH: &str = r#"
-    SELECT visitor, count FROM visits;
+    SELECT visitor, count FROM visits ORDER BY count DESC;
     "#;
 
 async fn visit(pool: &SqlitePool, visitor: &str, times: i64) -> anyhow::Result<()> {
