@@ -22,6 +22,15 @@ const FETCH: &str = r#"
     SELECT visitor, count FROM visits;
     "#;
 
+async fn visit(pool: &SqlitePool, visitor: &str, times: i64) -> anyhow::Result<()> {
+    query(VISIT).bind(times).bind(visitor).execute(pool).await?;
+    Ok(())
+}
+
+async fn fetch(pool: &SqlitePool) -> Result<Vec<Visitation>, sqlx::Error> {
+    query_as::<_, Visitation>(FETCH).fetch_all(pool).await
+}
+
 // OK, baby's first tokio app...
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -32,13 +41,9 @@ async fn main() -> anyhow::Result<()> {
 
     // ok setup time's over baby
     // visit:
-    query(VISIT)
-        .bind(1_i64)
-        .bind(current)
-        .execute(&pool)
-        .await?;
+    visit(&pool, current, 1).await?;
     // dump:
-    let results = query_as::<_, Visitation>(FETCH).fetch_all(&pool).await?;
+    let results = fetch(&pool).await?;
     for Visitation { visitor, count } in results.iter() {
         println!("{}: {}", visitor, count);
     }
