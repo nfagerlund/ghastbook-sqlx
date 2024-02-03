@@ -1,6 +1,10 @@
-ok, so I'm doing a `cargo install sqlx-cli` help manage the migrations. this will come up later.
+# to actually run this thing
 
-Notes to self:
+- `cargo install sqlx-cli`
+- `sqlx db setup`
+- `cargo run`
+
+# Notes to self
 
 ## sqlx-cli
 
@@ -104,3 +108,13 @@ Both these crates seem actively maintained: (Old materials accuse both of them o
 - [time](https://github.com/time-rs/time)
 
 It looks like chrono is more rigorous about separating timezone-aware types from naïve types.
+
+## tracing and subscribing
+
+this tracing stuff... woof... I guess it's complicated bc it's not just a logger, it's also what fuels like the Tracy integration in bevy, so it's got to be flexible and fast, plus there's all the span and scope stuff to associate events with logic zones in a way that chronological logs can't. anyway, it looks like:
+
+- registry() makes a blank-ish subscriber that you can insert a bunch of layers into
+- .with() calls insert layers that can filter events or choose to emit them to some form of output
+- .init() makes the finished subscriber the default subscriber.
+- the EnvFilter thing lets you set a string like the one you see inline via the $RUST_LOG env var.
+    - for some reason, my crate name gets transformed to have an underscore instead of a hyphen, not sure what the rules for that are, maybe it's in the info!() macro somewhere? Anyway,

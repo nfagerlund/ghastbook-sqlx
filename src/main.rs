@@ -75,17 +75,9 @@ async fn empty_web_visit(state: State<SqlitePool>) -> Result<String, StatusCode>
     web_visit(path, state).await
 }
 
-// OK, baby's first tokio app...
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // this tracing stuff... woof... anyway, it looks like registry() makes a
-    // blank-ish subscriber that you can insert a bunch of layers into, the .with()
-    // calls insert layers that can filter events or choose to emit them to some
-    // form of output, and the .init() makes the finished subscriber the default
-    // subscriber. And, for some reason, my crate name gets transformed to have an
-    // underscore instead of a hyphen, not sure what the rules for that are,
-    // maybe it's in the info!() macro somewhere? Anyway, the EnvFilter thing lets you
-    // set a string like the one you see inline via the $RUST_LOG env var.
+    // Set up debug logging for things that emit Tracing events
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -93,6 +85,7 @@ async fn main() -> anyhow::Result<()> {
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
+
     let pool = SqlitePool::connect("sqlite:./ghastbook.db").await?;
 
     let app = Router::new()
