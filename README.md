@@ -9,6 +9,26 @@ Notes to self:
 - It needs a `$DATABASE_URL`. Can take one from env var or a .env file.
     - the `sqlx::query!` macros require this also.
     - `sqlite:filename.db` (hmm)
+- `db create` just creates
+- `db setup` creates AND runs migrations
+- `migrate run` runs migrations
+- `migrate add NAME` makes a new sql migration file
+- `migrate info` lists em
+- `migrate revert` ...I guess creates a new inverse migration? Or, what? huh.
+
+### migrations
+
+> Did you know you can embed your migrations in your application binary?
+> On startup, after creating your database connection or pool, add:
+>
+> sqlx::migrate!().run(<&your_pool OR &mut your_connection>).await?;
+>
+> Note that the compiler won't pick up new migrations if no Rust source files > have changed.
+> You can create a Cargo build script to work around this with `sqlx migrate > build-script`.
+>
+> See: https://docs.rs/sqlx/0.5/sqlx/macro.migrate.html
+
+a nice message I got on the cli just now.
 
 ## sqlite itself
 
