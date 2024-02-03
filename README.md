@@ -16,7 +16,7 @@ Notes to self:
 - `migrate info` lists em
 - `migrate revert` ...I guess creates a new inverse migration? Or, what? huh.
 
-### migrations
+### migrations in-app
 
 > Did you know you can embed your migrations in your application binary?
 > On startup, after creating your database connection or pool, add:
@@ -29,6 +29,35 @@ Notes to self:
 > See: https://docs.rs/sqlx/0.5/sqlx/macro.migrate.html
 
 a nice message I got on the cli just now.
+
+### migrations in schema
+
+after running db setup with one migration:
+
+```sql
+sqlite> .schema
+CREATE TABLE _sqlx_migrations (
+    version BIGINT PRIMARY KEY,
+    description TEXT NOT NULL,
+    installed_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    success BOOLEAN NOT NULL,
+    checksum BLOB NOT NULL,
+    execution_time BIGINT NOT NULL
+);
+CREATE TABLE visits(
+    visitor TEXT PRIMARY KEY,
+    count INTEGER
+);
+```
+
+```
+.headers ON
+select * from _sqlx_migrations;
+version|description|installed_on|success|checksum|execution_time
+20240203024053|creation|2024-02-03 02:43:46|1|<BLOB GARBAGE>|404083
+```
+
+By the way, you can deal with the garbled output of BLOB typed columns by selecting columns individually and selecting `QUOTE(column)` for the affected one.
 
 ## sqlite itself
 
@@ -52,3 +81,16 @@ In sqlite, it looks like our options are
 Single-quotes. Postgres was like this too.
 
 Apparently you encode a literal single quote with two single quotes in a row. hate it!!
+
+## Time
+
+what even is it, anyway.
+
+std::time only does Instant and Duration, basically. It doesn't seem to know about clocks or calendars.
+
+Both these crates seem actively maintained: (Old materials accuse both of them of abandonment at various times.)
+
+- [chrono](https://github.com/chronotope/chrono)
+- [time](https://github.com/time-rs/time)
+
+It looks like chrono is more rigorous about separating timezone-aware types from naïve types.
