@@ -13,6 +13,7 @@ Notes to self:
 - `db setup` creates AND runs migrations
 - `migrate run` runs migrations
 - `migrate add NAME` makes a new sql migration file
+    - OH!! Specify `-r` to make reversible migrations!!! neat. But, I guess you have to specify that when creating the FIRSt migration. Hmmm.
 - `migrate info` lists em
 - `migrate revert` ...I guess creates a new inverse migration? Or, what? huh.
 
