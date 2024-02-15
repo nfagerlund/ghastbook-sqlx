@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        INSERT INTO visits (visitor, count) VALUES (?1, ?2)\n        ON CONFLICT(visitor) DO UPDATE\n        SET count = count + ?2;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "a69fbaba2ac60a658e7a273989ccc864f0084f00e6e00d2d26de4d90e87fbe47"
+}

@@ -36,7 +36,7 @@ async fn visit(pool: &SqlitePool, visitor: &str, times: i64) -> anyhow::Result<(
         r#"
         INSERT INTO visits (visitor, count) VALUES (?1, ?2)
         ON CONFLICT(visitor) DO UPDATE
-        SET count = count + ?1;
+        SET count = count + ?2;
         "#,
         visitor,
         times
