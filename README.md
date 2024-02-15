@@ -81,6 +81,8 @@ In sqlite, it looks like our options are
     - The `$` version has something funny with `::` namespace separators and parentheses that I don't understand from the description.
     - The name of the parameter isn't `name`, but `:name` or `@name` etc.
 
+It looks like maybe mysql only uses `?`.
+
 #### Oh hell naw
 
 sqlx does not support named query parameters in any way shape or form.
@@ -89,6 +91,8 @@ sqlx does not support named query parameters in any way shape or form.
 - <https://github.com/launchbadge/sqlx/issues/199>
 
 well, let's see if explicit positional works.
+
+(Yes, it does. ok! good enough.)
 
 ### string literals
 
