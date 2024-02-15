@@ -71,7 +71,7 @@ async fn web_visit(
 }
 
 async fn empty_web_visit(state: State<SqlitePool>) -> Result<String, StatusCode> {
-    let path = Path("default buttmunch".into());
+    let path = Path("default lurnker".into());
     web_visit(path, state).await
 }
 
