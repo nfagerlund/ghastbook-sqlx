@@ -10,7 +10,19 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(Parser, Debug)]
 struct Cli {
-    visitor: String,
+    /// Mandatory. The sqlite database URL to use, formatted like `sqlite:<PATH>`.
+    #[arg(long, value_name = "URL")]
+    db: Option<String>,
+    /// Serve in FastCGI mode, for low-touch hosting with mod_fcgid. Conflicts with --port.
+    #[arg(long)]
+    fcgi: bool,
+    /// The TCP port to serve the app on. Defaults to 3000. Conflicts with --fcgi.
+    #[arg(long)]
+    port: Option<u16>,
+    // An alternate URI path to mount the app at, for shared domains. Use leading and
+    // trailing slash, like `/nested/`.
+    // #[arg(long, value_name = "PATH")]
+    // mount: Option<String>,
 }
 
 #[derive(Debug, FromRow)]
@@ -77,6 +89,18 @@ async fn empty_web_visit(state: State<SqlitePool>) -> Result<String, StatusCode>
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    let args = Cli::parse();
+
+    // validate and munge
+    if args.fcgi && args.port.is_some() {
+        panic!("The --fcgi and --port options are mutually exclusive. Choose one!");
+    }
+    // let mount = args.mount.as_deref().unwrap_or("/");
+    let port = args.port.unwrap_or(3000);
+    let Some(db_url) = args.db else {
+        panic!("Must provide a database URL with --db");
+    };
+
     // Set up debug logging for things that emit Tracing events
     tracing_subscriber::registry()
         .with(
@@ -86,16 +110,22 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let pool = SqlitePool::connect("sqlite:./ghastbook.db").await?;
+    let pool = SqlitePool::connect(&db_url).await?;
 
     let app = Router::new()
         .route("/:visitor", get(web_visit))
         .route("/", get(empty_web_visit))
         .with_state(pool);
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
-    tracing::info!("listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, app).await.unwrap();
+    if args.fcgi {
+        busride_rs::serve_fcgid(app, 50.try_into()?).await?;
+    } else {
+        let listener = tokio::net::TcpListener::bind(("127.0.0.1", port))
+            .await
+            .unwrap();
+        tracing::info!("listening on {}", listener.local_addr().unwrap());
+        axum::serve(listener, app).await?;
+    }
 
     Ok(())
 }
