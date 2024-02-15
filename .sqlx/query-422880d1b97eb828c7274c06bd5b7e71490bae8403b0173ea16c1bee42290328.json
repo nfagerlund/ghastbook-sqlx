@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT visitor, count FROM visits ORDER BY count DESC;",
+  "describe": {
+    "columns": [
+      {
+        "name": "visitor",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "count",
+        "ordinal": 1,
+        "type_info": "Int64"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "422880d1b97eb828c7274c06bd5b7e71490bae8403b0173ea16c1bee42290328"
+}
