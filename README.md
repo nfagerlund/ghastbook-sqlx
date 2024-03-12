@@ -113,6 +113,10 @@ Both these crates seem actively maintained: (Old materials accuse both of them o
 
 It looks like chrono is more rigorous about separating timezone-aware types from naïve types.
 
+<del>I decided to use chrono. probably.</del>
+
+NOPE, NUH-UH!! we're using time! It turns out that the ubiquitous `cookies` crate uses `time` types, so it's in-tree already for all my real-world use cases.
+
 ## tracing and subscribing
 
 this tracing stuff... woof... I guess it's complicated bc it's not just a logger, it's also what fuels like the Tracy integration in bevy, so it's got to be flexible and fast, plus there's all the span and scope stuff to associate events with logic zones in a way that chronological logs can't. anyway, it looks like:
