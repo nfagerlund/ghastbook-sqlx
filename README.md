@@ -11,13 +11,13 @@
 <https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md>
 
 - It needs a `$DATABASE_URL`. Can take one from env var or a .env file.
-    - the `sqlx::query!` macros require this also.
-    - `sqlite:filename.db` (hmm)
+  - the `sqlx::query!` macros require this also.
+  - `sqlite:filename.db` (hmm)
 - `db create` just creates
 - `db setup` creates AND runs migrations
 - `migrate run` runs migrations
 - `migrate add NAME` makes a new sql migration file
-    - OH!! Specify `-r` to make reversible migrations!!! neat. But, I guess you have to specify that when creating the FIRSt migration. Hmmm.
+  - OH!! Specify `-r` to make reversible migrations!!! neat. But, I guess you have to specify that when creating the FIRSt migration. Hmmm.
 - `migrate info` lists em
 - `migrate revert` ...I guess creates a new inverse migration? Or, what? huh.
 
@@ -78,8 +78,8 @@ In sqlite, it looks like our options are
 - `?` -- auto-incrementing positional placeholder. this is what I used in the rusqlite ghastbook, due to all the examples. Obviously this sucks ass.
 - `?1`, `?2`... -- manual positional placeholder. ok, word. Note that the count starts at 1 not 0.
 - `:name`, `@name`, `$name` -- named parameters. If you're doing the C api yourself, you actually need to call a function to look up the underlying auto-incremented index of each named parameter and then pass the values by index. But wrapper libraries handle that for you.
-    - The `$` version has something funny with `::` namespace separators and parentheses that I don't understand from the description.
-    - The name of the parameter isn't `name`, but `:name` or `@name` etc.
+  - The `$` version has something funny with `::` namespace separators and parentheses that I don't understand from the description.
+  - The name of the parameter isn't `name`, but `:name` or `@name` etc.
 
 It looks like maybe mysql only uses `?`.
 
@@ -125,4 +125,4 @@ this tracing stuff... woof... I guess it's complicated bc it's not just a logger
 - .with() calls insert layers that can filter events or choose to emit them to some form of output
 - .init() makes the finished subscriber the default subscriber.
 - the EnvFilter thing lets you set a string like the one you see inline via the $RUST_LOG env var.
-    - for some reason, my crate name gets transformed to have an underscore instead of a hyphen, not sure what the rules for that are, maybe it's in the info!() macro somewhere? Anyway,
+  - for some reason, my crate name gets transformed to have an underscore instead of a hyphen, not sure what the rules for that are, maybe it's in the info!() macro somewhere? Anyway,
